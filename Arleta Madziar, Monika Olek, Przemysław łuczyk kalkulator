@@ -1,0 +1,89 @@
+Język programowania C#
+Opis działania kalkulatora stworzony na podstawie projektu opracowanego w Visual Studio
+oraz "Visual Studio WinForm Windows Calculator Tutorial Example (C#)" - źródło you tube
+
+1. W chwili uruchomienia kalkulatora wyświetlana wartość wynosi "0"
+ - Wyświetlana wartość (string) -> Wynik.Text 
+   Wynik.Text = "0";
+
+2. Naciśniecie przycisku w zakresie od 0-9 z przecinkiem powoduje zapisanie do zmiennej typu string
+   tego znaku.
+   - Zmienna (String) B.Text <- przechowuje informacje o ostatnio naciśniętym znaku. 
+   - Button B = (Button)sender;
+
+3. Do wyświetlanego wyniku w chwili naciśnięcia przycisku (0-9 z przecinkiem) dopisywane są kolejne znaki.
+   - Zmienna (String) Wynik.Text < - Przechowuje informacje o wyświetlanej przez kalkulator wartości. 
+   - Wynik.Text = Wynik.Text + B.Text; <- Dodanie znaku do wyświetlanej wartości. 
+
+4. Gdy wyświetlana na kalkulatorze wartość równa jest 0 wówczas znak jest kasowany i zastąpiony pierwszym naciśniętym.
+   - if (Wynik.Text == "0")  -> Zapytanie "Czy wartość wyświetlana równa jest 0?"
+         Wynik.Clear();       -> Jeśli tak to wykonujemy czyszczenie pamięci zmiennej. Jeśli nie nic nie rób.
+
+5. W chwili naciśnięcia przecinka, sprawdzane jest czy takowy w wartości wyświetlanej się znajduje. 
+   Jeśli tak kolejne naciśnięcia tego znaku są pomijane. 
+   -if (!Wynik.Text.Contains(",")) - Zapytanie: "Czy w wyświetlanej wartości nie ma przecinka?"
+       Wynik.Text = Wynik.Text + B.Text; - Jeśli nie ma to zostanie on dopisany. Jeśli jest nic nie rób.
+
+6. Naciśnięcie przycisku jednej z operacji matematycznych (+ - * /) powoduje zapisanie znaku tej operacji do zmiennej 
+   typu string.
+   - Zmienna (String) Operacje <- przechowuje informacje o naciśniętym przycisku operacji matematycznej. 
+   - Operacje = B.Text; <- Wpisanie do zmiennej znaku operacji matematycznej (+ - * /)
+
+7. Sprawdzenie czy zmienna wyświetlana przez kalkulator jest liczbą. Jeśli nie, wyświetl błąd bądź zamienień nie-liczbę na 0:
+   Przykład zamiany na 0:
+   -if ((Wynik.Text == ",") || (Wynik.Text == "0,")) -> Zapytanie "Czy wartość wyświetlana równa jest "," bądź "0,""? (W przypaku wystąpienia ,(liczba) program odczyta to jako 0,(liczba))       
+       Wynik.Text = "0";  -> Jeśli tak to zamień nie-liczbę na "0". Jeśli nie, nic nie rób. 
+
+8. Zamiana typu zmiennej wyświetlanej przez kalkulator wartości (Wynik.Text) na nową zmienną typu 
+   zmiennoprzecinkowego [double] (wartosc)
+  - Zmienna (Double) Wartosc <- Przechowuje informacje o ostatniej wprowadzonej liczbie 
+  - Wartosc = Double.Parse(Wynik.Text); <- Zamiana typu string zmiennej Wynik.Text na double i przypisanie wartości do zmiennej Wartosc.
+
+9. Czyszczenie wartości wyświetlanej przez kalkulator w celu stworzenia miejsca dla kolejnej wprowadzanej liczby. 
+        Wynik.Clear() -> Czyszczenie pamięci wartości wyświetlanej w celu zrobienia miejsca dla nowo wprowadzanej liczby.
+
+10. Powtórzenie etapu od 1-5 w celu wprowadzenia kolejnej liczby. 
+
+11. Naciśnięcie przycisku "=" powoduje sprawdzenie znaku operacji (Operacje) i wykonanie obliczeń na tym znaku.  
+    switch (Operacje) <- Wczytanie znaku operacji matematycznej i wykonanie czynności zależnej od tego znaku
+      case "+": <- Jeśli znakiem operacji jest + to wykonaj funkcję poniżej
+	Operacje Dodawania 
+      case "-": <- Jeśli znakiem operacji jest - to wykonaj funkcję poniżej
+	Operacja Odejmowania 
+      case "*": <- Jeśli znakiem operacji jest * to wykonaj funkcję poniżej
+	Operacja Mnożenia 
+      case "/": <- Jeśli znakiem operacji jest / to wykonaj funkcję poniżej
+	Operacja Dzielenia 
+
+Przykład funkcji Operacji Dodawania:
+Wynik.Text = (wartosc + Double.Parse(Wynik.Text)).ToString();
+  - Wynik.Text =  <- Wartość Wyświetlana na kalkulatorze równa jest
+  - wartosc + <- pierwsza wprowadzona liczba (typ double; zmienna wyznaczona w pkt 8.) dodać
+  - Double.Parse(Wynik.Text) <- Zamiana typu string zmiennej Wynik.Text na double
+  - .ToString() <- Zważywszy że zmienna "Wynik.Text" jest typu string, po wykonaniu obliczeń trzeba zamienić ją z powrotem na typ string. 
+
+12. W przypadku dzielenia kalkulator sprawdza czy druga wprowadzona liczba równa jest "0", jeśli tak wyświetlić błąd "Nie dziel przez 0"
+   - if (Wynik.Text == "0") <- Zapytanie "Czy druga liczba równa jest 0?" 
+     {MessageBox.Show("Nie można dzielić przez 0");  
+          Wynik.Text = "0"; }   <- Jeśli tak wyświetl komunikat "Nie można dzielić przez 0" i zamień wyświetlany wynik na 0. Jeśli nie, nic nie rób.
+
+13* (Rozwinięcie kalkulatora o funkcje ciągłego dodawania [5+5+5=])
+    Po naciśnięciu klawisza "=" i wykonaniu operacji, zapisywana jest wartość uzyskanego wyniku do zmiennej (Wartosc), 
+    która wcześniej przechowywała wartość pierwszej liczby. Czyszczony jest również znak operacji.
+      - wartosc = Double.Parse(Wynik.Text); <- Zapisanie uzyskanego wcześniej wyniku do zmiennej typu double jako pierwszej wpisanej liczbie.
+      - Operacje = ""; <- Czyszczenie pamięci zmiennej przechowującej znak operacji
+
+14* Po naciśnięciu znaku operacji program sprawdza czy zmienna "wartosc" nie równa się. 0 Jeśli tak to ponawia działania operacji "="
+            if (wartosc != 0)  <- Zapytanie "Czy "wartosc" nie równa się "0" 
+            {
+                Equal.PerformClick(); //Automatyczne 
+                operacje_click = true; <- Operacja boolowska (prawda/fałsz) pozwalająca określić czy po naciśnięciu przycisku wprowadzana będzie następnie kolejna liczba.
+                Operacje = B.Text;
+            } Jeśli tak, powtórz operację "=" i przypisz znak do zmiennej operacji.
+
+15* Można teraz wykonywać działania ciągłe np. 4+4+4 
+
+16* Klikanie ciągłe znaku operacji będzie powodowało wykonywanie się obliczeń przez tę samą wartość 
+(4+++ == (4+4)+8 == 16)
+4++ -> Dodanie do siebie 4 z tą samą wartością co daje 8
+4+++ -> Dodanie do siebie dwóch czwórek które daję liczbę 8 a następnie dodana jest do tej liczby ta sama wartość czyli 8 co równe jest 16.
